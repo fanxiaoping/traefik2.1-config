@@ -1,0 +1,30 @@
+[global]
+  checkNewVersion = false
+  sendAnonymousUsage = false
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"   
+  [entryPoints.websecure]
+    address = ":443" 
+  [entryPoints.traefik]
+    address = ":8080" 
+[log]
+  level = "DEBUG"
+[certificatesResolvers.bxtlschallenge.acme]
+  email = "604694379@qq.com"
+  storage = "/letsencrypt/acme.json"
+  [certificatesResolvers.bxtlschallenge.acme.httpChallenge]
+    entryPoint = "web"
+
+[providers.file]
+  directory = "/etc/traefik/conf"
+
+[api]
+  insecure = true
+  dashboard = true
+[ping]
+[providers.docker]
+  endpoint = "unix:///var/run/docker.sock"
+  exposedByDefault = true
+[serversTransport]
+  insecureSkipVerify = true

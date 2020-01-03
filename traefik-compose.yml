@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+    traefik:
+        image: traefik:v2.1
+        container_name: traefik
+        ports:
+            # HTTP 端口
+            - "80:80"
+            # HTTPS 端口
+            - "443:443"
+            # Web UI 端口
+            - "8080:8080"
+        volumes:
+            # 这样Traefik可以监听Docker事件
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            # 启动配置文件
+            - ./traefik.toml:/etc/traefik/traefik.toml
+            # 自定义routers、services
+            - ./conf:/etc/traefik/conf
+            # 存储证书秘钥
+            - ./traefik/letsencrypt:/letsencrypt
+
+    whoami:
+        # 公开API以显示其IP地址的容器
+        image: containous/whoami
+        container_name: whoami
+        labels:
+            # 地址：whoami.fanxp.com
+            - "traefik.http.routers.whoami.rule=Host(`whoami.fanxp.com`)"
+            # 入口方式，这里采用https
+            - "traefik.http.routers.whoami.entrypoints=websecure"
+            # 指定证书
+            - "traefik.http.routers.whoami.tls.certresolver=bxtlschallenge"
+
+    whoami2:
+        # 公开API以显示其IP地址的容器
+        image: containous/whoami
+        container_name: whoami2
+        labels:
+            # 地址：whoami.fanxp.com/v2
+            - "traefik.http.routers.whoami2.rule=Host(`whoami.fanxp.com`) && PathPrefix(`/v2`)"
+            # 默认代理使用http://172.0.0.4 配置方式用https://172.0.0.4
+            # - "traefik.http.services.bx_resource_library.loadbalancer.server.scheme=https"
+            # 定义中间件 规则
+            - "traefik.http.routers.whoami2.middlewares=whoami2-stripprefix"
+            # 代理：172.0.0.4/v2访问，这肯定不是我们想要的 写上规则后 代理：172.0.0.4
+            - "traefik.http.middlewares.whoami2-stripprefix.stripprefix.prefixes=/v2"
+            # 如果容器有多个端口 可以指定当前service暴露哪一个端口，默认第一个
+            - "traefik.http.services.whoami2.loadbalancer.server.port=80"
+            # 入口方式，这里采用https
+            - "traefik.http.routers.whoami2.entrypoints=websecure"
+            # 指定证书
+            - "traefik.http.routers.whoami2.tls.certresolver=bxtlschallenge"

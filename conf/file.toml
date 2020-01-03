@@ -1,0 +1,24 @@
+[http]
+  # 自定义 routers
+  [http.routers]
+    # http 方式
+    [http.routers.routers-cnblogs]
+      entryPoints = ["web"]
+      rule = "Host(`cnblogs.fanxp.com`)"
+      service = "cnblogs"
+    # https 方式
+    [http.routers.routers-cnblogs1]
+      entryPoints = ["websecure"]
+      rule = "Host(`cnblogs.fanxp.com`)"
+      service = "cnblogs"
+      [http.routers.routers-cnblogs1.tls]
+        certResolver = "bxtlschallenge"
+  # 自定义 services
+  [http.services]
+    [http.services.cnblogs]
+      # 可以设置多个url traefik 根据算法做负载均衡
+      [http.services.cnblogs.loadBalancer]
+        [[http.services.cnblogs.loadBalancer.servers]]
+          url = "https://www.cnblogs.com/fanxp/"
+        [[http.services.cnblogs.loadBalancer.servers]]
+          url = "https://github.com/fanxiaoping/grpc-test"
