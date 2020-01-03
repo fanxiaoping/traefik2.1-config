@@ -19,7 +19,7 @@ services:
             # 自定义routers、services
             - ./conf:/etc/traefik/conf
             # 存储证书秘钥
-            - ./traefik/letsencrypt:/letsencrypt
+            - ./letsencrypt:/letsencrypt
 
     whoami:
         # 公开API以显示其IP地址的容器
@@ -27,11 +27,11 @@ services:
         container_name: whoami
         labels:
             # 地址：whoami.fanxp.com
-            - "traefik.http.routers.whoami.rule=Host(`whoami.fanxp.com`)"
+            - "traefik.http.routers.whoami.rule=Host(`whoami.baxedu.top`)"
             # 入口方式，这里采用https
             - "traefik.http.routers.whoami.entrypoints=websecure"
             # 指定证书
-            - "traefik.http.routers.whoami.tls.certresolver=bxtlschallenge"
+            - "traefik.http.routers.whoami.tls.certresolver=test"
 
     whoami2:
         # 公开API以显示其IP地址的容器
@@ -39,7 +39,7 @@ services:
         container_name: whoami2
         labels:
             # 地址：whoami.fanxp.com/v2
-            - "traefik.http.routers.whoami2.rule=Host(`whoami.fanxp.com`) && PathPrefix(`/v2`)"
+            - "traefik.http.routers.whoami2.rule=Host(`whoami.baxedu.top`) && PathPrefix(`/v2`)"
             # 默认代理使用http://172.0.0.4 配置方式用https://172.0.0.4
             # - "traefik.http.services.bx_resource_library.loadbalancer.server.scheme=https"
             # 定义中间件 规则
@@ -51,4 +51,4 @@ services:
             # 入口方式，这里采用https
             - "traefik.http.routers.whoami2.entrypoints=websecure"
             # 指定证书
-            - "traefik.http.routers.whoami2.tls.certresolver=bxtlschallenge"
+            - "traefik.http.routers.whoami2.tls.certresolver=test"

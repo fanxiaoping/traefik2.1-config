@@ -10,10 +10,10 @@
     address = ":8080" 
 [log]
   level = "DEBUG"
-[certificatesResolvers.bxtlschallenge.acme]
+[certificatesResolvers.test.acme]
   email = "604694379@qq.com"
   storage = "/letsencrypt/acme.json"
-  [certificatesResolvers.bxtlschallenge.acme.httpChallenge]
+  [certificatesResolvers.test.acme.httpChallenge]
     entryPoint = "web"
 
 [providers.file]

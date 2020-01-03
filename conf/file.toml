@@ -4,15 +4,15 @@
     # http 方式
     [http.routers.routers-cnblogs]
       entryPoints = ["web"]
-      rule = "Host(`cnblogs.fanxp.com`)"
+      rule = "Host(`cnblog.baxedu.top`)"
       service = "cnblogs"
     # https 方式
     [http.routers.routers-cnblogs1]
       entryPoints = ["websecure"]
-      rule = "Host(`cnblogs.fanxp.com`)"
+      rule = "Host(`cnblog.baxedu.top`)"
       service = "cnblogs"
       [http.routers.routers-cnblogs1.tls]
-        certResolver = "bxtlschallenge"
+        certResolver = "test"
   # 自定义 services
   [http.services]
     [http.services.cnblogs]
